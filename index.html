@@ -7,35 +7,23 @@
     <link rel="stylesheet" href="index-style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="profile">
-                <img src="your-profile-picture.jpg" alt="Your Profile Picture">
-                <h1>Colin 524</h1>
-                <p>@colin524</p>
-            </div>
-            <nav class="nav">
-                <ul>
-                    <li>Repositories</li>
-                    <li>Projects</li>
-                    <li>Stars</li>
-                    <li>Followers</li>
-                    <li>Following</li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    
-    <main class="main">
-        <div class="container">
-            <!-- Your content here -->
-        </div>
+    <div class="top-bar">
+        <nav>
+            <ul>
+                <li><a href="#" onclick="loadPage('profile.html')">Profile</a></li>
+                <li><a href="#" onclick="loadPage('repositories.html')">Repositories</a></li>
+                <li><a href="#" onclick="loadPage('projects.html')">Projects</a></li>
+                <li><a href="#" onclick="loadPage('stars.html')">Stars</a></li>
+                <li><a href="#" onclick="loadPage('followers.html')">Followers</a></li>
+                <li><a href="#" onclick="loadPage('following.html')">Following</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main class="main" id="content">
+        <!-- Content will be loaded here using JavaScript -->
     </main>
-    
-    <footer class="footer">
-        <div class="container">
-            &copy; 2023 Colin 524
-        </div>
-    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

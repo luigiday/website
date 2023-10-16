@@ -61,3 +61,32 @@ body {
     color: #58a6ff;
     text-decoration: none;
 }
+
+/* Your existing styles here */
+
+.top-bar {
+    background-color: #0d1117;
+    padding: 10px 0;
+}
+
+.top-bar nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.top-bar nav ul li {
+    margin-right: 20px;
+}
+
+.top-bar nav ul li a {
+    text-decoration: none;
+    color: #c9d1d9;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.top-bar nav ul li a:hover {
+    color: #58a6ff;
+}
