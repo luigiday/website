@@ -2,6 +2,9 @@ body {
     background-color: #0d1117;
     color: #c9d1d9;
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
 .container {
@@ -10,83 +13,48 @@ body {
     padding: 20px;
 }
 
-.header {
-    background-color: #161b22;
-    padding: 20px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.top-nav {
+    background-color: #0d1117;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
 }
 
-.profile {
+.top-nav ul {
+    list-style: none;
     display: flex;
-    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.top-nav li {
+    margin: 10px;
+    cursor: pointer;
+}
+
+.header {
+    background-color: #0d1117;
+    padding: 100px 0;
+    text-align: center;
 }
 
 .profile img {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
-    margin-right: 20px;
+    margin: 0 auto;
+    display: block;
 }
 
 .profile h1, .profile p {
-    margin: 0;
+    margin: 10px;
     color: #58a6ff;
-}
-
-.nav ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    align-items: center;
-}
-
-.nav li {
-    margin-right: 20px;
-    cursor: pointer;
 }
 
 .main {
     padding: 20px 0;
-}
-
-.footer {
-    background-color: #161b22;
-    text-align: center;
-    padding: 10px 0;
-}
-
-.footer a {
-    color: #58a6ff;
-    text-decoration: none;
-}
-
-/* Your existing styles here */
-
-.top-bar {
-    background-color: #0d1117;
-    padding: 10px 0;
-}
-
-.top-bar nav ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    justify-content: space-around;
-}
-
-.top-bar nav ul li {
-    margin-right: 20px;
-}
-
-.top-bar nav ul li a {
-    text-decoration: none;
-    color: #c9d1d9;
-    font-weight: 600;
-    transition: color 0.3s;
-}
-
-.top-bar nav ul li a:hover {
-    color: #58a6ff;
 }
