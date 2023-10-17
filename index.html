@@ -16,7 +16,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your GitHub Profile</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="index-style.css">
 </head>
 <body>
     <div class="top-nav">
@@ -63,5 +63,14 @@
             <!-- Your content here -->
         </div>
     </main>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const is404Redirect = urlParams.get('from404');
+
+        if (is404Redirect) {
+            // Display the popup if it's a 404 redirection
+            alert("La page que a vous recherchez n'existe pas (404)");
+        }
+    </script>
 </body>
 </html>
