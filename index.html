@@ -10,18 +10,6 @@
     <div class="top-nav">
         <nav>
             <ul>
-                <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your GitHub Profile</title>
-    <link rel="stylesheet" href="index-style.css">
-</head>
-<body>
-    <div class="top-nav">
-        <nav>
-            <ul>
                 <li><a href="https://github.com/colin524?tab=repositories">Repositories</a></li>
                 <li><a href="/projects">Projects</a></li>
                 <li><a href="#stars">Stars</a></li>
@@ -30,7 +18,12 @@
             </ul>
         </nav>
     </div>
-
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <p>The page you requested was not found.</p>
+            <button onclick="closePopup()">OK</button>
+        </div>
+    </div>
     <header class="header">
         <div class="container">
             <div class="profile">
@@ -45,13 +38,23 @@
         </div>
     </main>
     <script>
+        // Function to display the popup
+        function showPopup() {
+            document.getElementById("popup").style.display = "block";
+        }
+
+        // Function to close the popup
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const is404Redirect = urlParams.get('from404');
 
             if (is404Redirect) {
                 // Display the popup if it's a 404 redirection
-                alert("La page a laquelle vous avez tenté d'acceder n'existe pas. (404)");
+                showPopup();
             }
         };
     </script>
