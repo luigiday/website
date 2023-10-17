@@ -30,31 +30,12 @@
             </ul>
         </nav>
     </div>
-    <header class="header">
-        <div class="container">
-            <div class="profile">
-                <img src="your-profile-picture.jpg" alt="Your Profile Picture">
-                <h1>Your Name</h1>
-                <p>@yourusername</p>
-            </div>
-        </div>
-    </header>
-    <main class="main">
-        <div class="container">
-            <!-- Your content here -->
-        </div>
-    </main>
-</body>
-</html>
 
-            </ul>
-        </nav>
-    </div>
     <header class="header">
         <div class="container">
             <div class="profile">
                 <img src="profile.jpeg" alt="Profile picture">
-                <h1>Colin 524 </h1>
+                <h1>Colin 524</h1>
             </div>
         </div>
     </header>
@@ -64,13 +45,15 @@
         </div>
     </main>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const is404Redirect = urlParams.get('from404');
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const is404Redirect = urlParams.get('from404');
 
-        if (is404Redirect) {
-            // Display the popup if it's a 404 redirection
-            alert("La page que a vous recherchez n'existe pas (404)");
-        }
+            if (is404Redirect) {
+                // Display the popup if it's a 404 redirection
+                alert("La page a laquelle vous avez tenté d'acceder n'existe pas. (404)");
+            }
+        };
     </script>
 </body>
 </html>
