@@ -20,8 +20,9 @@
     </div>
     <div id="popup" class="popup">
         <div class="popup-content">
-            <p>The page you requested was not found.</p>
-            <button onclick="closePopup()">OK</button>
+            <p>Erreur 404</p>
+            <p>La page a laquelle vous tentez d'acceder n'existe pas ou plus</p>
+            <button onclick="closePopup()">Revenir a l'acceuil</button>
         </div>
     </div>
     <header class="header">
@@ -41,11 +42,13 @@
         // Function to display the popup
         function showPopup() {
             document.getElementById("popup").style.display = "block";
+            document.title = "Erreur 404";
         }
 
         // Function to close the popup
         function closePopup() {
             document.getElementById("popup").style.display = "none";
+            document.title = "Colin 524";
         }
 
         window.onload = function() {
