@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unfinished Page</title>
+    <link rel="stylesheet" href="index-style.css">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #content-container {
+            text-align: center;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div id="content-container">
+        <h1>This page is not finished yet</h1>
+        <p>Automatically redirecting...</p>
+    </div>
+
+    <script>
+        // Get the user's browser language
+        var userLanguage = navigator.language || navigator.userLanguage;
+
+        // Check if the browser language is French
+        if (userLanguage.toLowerCase() === 'fr' || userLanguage.toLowerCase().startsWith('fr-')) {
+            // Redirect to the specified URL with the unfinished parameter
+            window.location.href = "/?unfinished=true";
+        } else {
+            // No redirect, show the initial page
+            document.getElementById("content-container").innerHTML = "<h1>This page is not finished yet</h1><button id=\"redirectButton\">Go back home (the home page is in French)</button>";
+            
+            var redirectButton = document.getElementById("redirectButton");
+
+            redirectButton.addEventListener("click", function() {
+                window.location.href = "/";
+            });
+        }
+    </script>
+</body>
+</html>

@@ -21,8 +21,15 @@
     <div id="popup" class="popup">
         <div class="popup-content">
             <p>Erreur 404</p>
-            <p>La page a laquelle vous tentez d'acceder n'existe pas ou plus</p>
-            <button onclick="closePopup()">Revenir a l'acceuil</button>
+            <p>La page à laquelle vous tentez d'accéder n'existe pas ou plus</p>
+            <button onclick="closePopup()">Revenir à l'accueil</button>
+        </div>
+    </div>
+    <div id="unfinishedPopup" class="popup" style="display: none;">
+        <div class="popup-content">
+            <p>Page non terminée</p>
+            <p>La page a laquelle vous avez tenté d'acceder n'est pas terminée, revenez plus tard ;)</p>
+            <button onclick="closeUnfinishedPopup()">Return to the homepage</button>
         </div>
     </div>
     <header class="header">
@@ -39,25 +46,45 @@
         </div>
     </main>
     <script>
-        // Function to display the popup
+        // Function to display the 404 popup
         function showPopup() {
             document.getElementById("popup").style.display = "block";
             document.title = "Erreur 404";
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
 
-        // Function to close the popup
+        // Function to close the 404 popup
         function closePopup() {
             document.getElementById("popup").style.display = "none";
+            document.title = "Colin 524";
+        }
+
+        // Function to display the unfinished page popup
+        function showUnfinishedPopup() {
+            document.getElementById("unfinishedPopup").style.display = "block";
+            document.title = "Page non terminée";
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // Function to close the unfinished page popup
+        function closeUnfinishedPopup() {
+            document.getElementById("unfinishedPopup").style.display = "none";
             document.title = "Colin 524";
         }
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const is404Redirect = urlParams.get('from404');
+            const isUnfinished = urlParams.get('unfinished');
 
             if (is404Redirect) {
-                // Display the popup if it's a 404 redirection
+                // Display the 404 popup if it's a 404 redirection
                 showPopup();
+            }
+
+            if (isUnfinished === 'true') {
+                // Display the unfinished page popup if the 'unfinished' parameter is provided
+                showUnfinishedPopup();
             }
         };
     </script>
