@@ -78,10 +78,24 @@
             document.title = "Colin 524";
         }
 
+        // Function to display the unfinished page popup
+        function showUnavarliablePopup() {
+            document.getElementById("unavarliablePopup").style.display = "block";
+            document.title = "Page ou service non disponible";
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // Function to close the unfinished page popup
+        function closeUnavarliablePopup() {
+            document.getElementById("unavarliablePopup").style.display = "none";
+            document.title = "Colin 524";
+        }
+
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const is404Redirect = urlParams.get('from404');
             const isUnfinished = urlParams.get('unfinished');
+            const isUnavarliable = urlParams.get('unavarliable');
 
             if (is404Redirect) {
                 // Display the 404 popup if it's a 404 redirection
@@ -89,6 +103,11 @@
             }
 
             if (isUnfinished === 'true') {
+                // Display the unfinished page popup if the 'unfinished' parameter is provided
+                showUnfinishedPopup();
+            }
+
+            if (isUnavarliable === 'true') {
                 // Display the unfinished page popup if the 'unfinished' parameter is provided
                 showUnfinishedPopup();
             }
