@@ -1,117 +1,271 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colin 524</title>
-    <link rel="stylesheet" href="index-style.css">
+    <title>Profil Développeur - Thème Sombre avec Popup</title>
+    <style>
+        /* Style pour le thème sombre */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: #1f1f1f;
+            color: #f5f5f5;
+            padding: 2em 0;
+            text-align: center;
+            font-size: 1.8em;
+            position: relative;
+        }
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #4CAF50;
+            margin-bottom: 15px;
+        }
+        .name {
+            font-size: 2em;
+            margin: 0;
+        }
+        section {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 1em;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        h2 {
+            color: #4CAF50;
+            transition: color 0.3s ease;
+        }
+        .skills, .projects, .contact {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Style pour les easter eggs */
+        .easter-egg, .project-link {
+            color: #f39c12;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .easter-egg:hover, .project-link:hover {
+            color: #2e7d32;
+        }
+        
+        /* Style pour la popup */
+        .popup, .project-popup, .redirect-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 80%;
+            max-width: 500px;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            color: #e0e0e0;
+            z-index: 10;
+            opacity: 0;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .popup.visible, .project-popup.visible, .redirect-popup.visible {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        .popup h3, .project-popup h3, .redirect-popup h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .popup .close-btn, .project-popup .close-btn, .redirect-popup .confirm-btn, .redirect-popup .cancel-btn {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            margin-top: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .redirect-popup .confirm-btn {
+            background-color: #4CAF50;
+            margin-right: 10px;
+        }
+        
+        /* Overlay pour la popup */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 5;
+            display: none;
+        }
+        .overlay.visible {
+            display: block;
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
-    <div class="top-nav">
-        <nav>
-            <ul>
-                <li><a href="https://github.com/colin524?tab=repositories">Repositories</a></li>
-                <li><a href="/projects">Projects</a></li>
-                <li><a href="#stars">Stars</a></li>
-                <li><a href="#followers">Followers</a></li>
-                <li><a href="#following">Following</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div id="popup" class="popup">
-        <div class="popup-content">
-            <p>Erreur 404</p>
-            <p>La page à laquelle vous tentez d'accéder n'existe pas ou plus</p>
-            <button onclick="closePopup()">Revenir à l'accueil</button>
-        </div>
-    </div>
-    <div id="unfinishedPopup" class="popup" style="display: none;">
-        <div class="popup-content">
-            <p>Page non terminée</p>
-            <p>La page a laquelle vous avez tenté d'acceder n'est pas terminée, revenez plus tard ;)</p>
-            <button onclick="closeUnfinishedPopup()">Revenir a l'acceuil</button>
-        </div>
-    </div>
-    <div id="unavarliablePopup" class="popup" style="display: none;">
-        <div class="popup-content">
-            <p>Page indisponible</p>
-            <p>Cette page ou ce service n'est plus disponible. Merci de l'avoir utilisé.</p>
-            <button onclick="closeUnfinishedPopup()">Revenir a l'acceuil</button>
-        </div>
-    <header class="header">
-        <div class="container">
-            <div class="profile">
-                <img src="profile.jpeg" alt="Profile picture">
-                <h1>Colin 524</h1>
-            </div>
-        </div>
-    </header>
-    <main class="main">
-        <div class="container">
-            <!-- Your content here -->
-        </div>
-    </main>
-    <script>
-        // Function to display the 404 popup
-        function showPopup() {
-            document.getElementById("popup").style.display = "block";
-            document.title = "Erreur 404";
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
 
-        // Function to close the 404 popup
-        function closePopup() {
-            document.getElementById("popup").style.display = "none";
-            document.title = "Colin 524";
-        }
+<header>
+    <img src="https://via.placeholder.com/120" alt="Photo de profil" class="profile-image">
+    <h1 class="name">Nom du Développeur</h1>
+    <p>Développeur Web & Mobile</p>
+</header>
 
-        // Function to display the unfinished page popup
-        function showUnfinishedPopup() {
-            document.getElementById("unfinishedPopup").style.display = "block";
-            document.title = "Page non terminée";
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
+<section id="about">
+    <h2>Présentation</h2>
+    <p>Salut ! Je suis un développeur passionné par les nouvelles technologies, les défis techniques et le développement de solutions efficaces.</p>
+    <p>Un <span class="easter-egg">secret</span> se cache ici... Clique pour le découvrir !</p>
+</section>
 
-        // Function to close the unfinished page popup
-        function closeUnfinishedPopup() {
-            document.getElementById("unfinishedPopup").style.display = "none";
-            document.title = "Colin 524";
-        }
+<section id="skills" class="skills">
+    <h2>Compétences</h2>
+    <ul>
+        <li>HTML, CSS, JavaScript</li>
+        <li>Python, Node.js, et frameworks modernes</li>
+        <li>Base de données (SQL, MongoDB)</li>
+    </ul>
+</section>
 
-        // Function to display the unfinished page popup
-        function showUnavarliablePopup() {
-            document.getElementById("unavarliablePopup").style.display = "block";
-            document.title = "Page ou service non disponible";
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
+<section id="projects" class="projects">
+    <h2>Projets</h2>
+    <ul>
+        <li><a href="#" id="project1-link" class="project-link">Smoothgressi : Une alternative open-source et plus simple au logiciel de modelisation Regressi</a></li>
+        <li><a href="#" id="project2-link" class="project-link">LGBP : Des bots discord et un site pour un jeu dans mon lycée</a></li>
+        <li><a href="#" id="project3-link" class="project-link">Projet 3: Intégration de systèmes complexes</a></li>
+    </ul>
+</section>
 
-        // Function to close the unfinished page popup
-        function closeUnavarliablePopup() {
-            document.getElementById("unavarliablePopup").style.display = "none";
-            document.title = "Colin 524";
-        }
+<section id="contact" class="contact">
+    <h2>Contact</h2>
+    <p>Pour me contacter, envoyez-moi un e-mail à <strong>monemail@example.com</strong></p>
+</section>
 
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const is404Redirect = urlParams.get('from404');
-            const isUnfinished = urlParams.get('unfinished');
-            const isUnavarliable = urlParams.get('unavarliable');
+<!-- Overlay et Popups -->
+<div class="overlay"></div>
 
-            if (is404Redirect) {
-                // Display the 404 popup if it's a 404 redirection
-                showPopup();
+<!-- Popup pour le secret -->
+<div class="popup" id="secret-popup">
+    <h3>Secret Révélé !</h3>
+    <p>Félicitations ! Tu as découvert un secret bien gardé ! 🎉</p>
+    <button class="close-btn">Fermer</button>
+</div>
+
+<!-- Popup pour les projets -->
+<div class="project-popup" id="project2-popup">
+    <h3>Projet 2: Automatisation des Processus</h3>
+    <p>Ce projet vise à automatiser des processus manuels avec Python, en utilisant des bibliothèques comme Pandas et Selenium.</p>
+    <a href="https://github.com/smoothgressi/project2" class="project-link" target="_blank">Voir sur GitHub</a>
+    <button class="close-btn">Fermer</button>
+</div>
+
+<div class="project-popup" id="project3-popup">
+    <h3>Projet 3: Intégration de Systèmes</h3>
+    <p>Ce projet se concentre sur l'intégration de systèmes d'entreprise en utilisant des APIs RESTful et des services cloud.</p>
+    <a href="https://github.com/smoothgressi/project3" class="project-link" target="_blank">Voir sur GitHub</a>
+    <button class="close-btn">Fermer</button>
+</div>
+
+<!-- Popup de confirmation de redirection -->
+<div class="redirect-popup" id="redirect-popup">
+    <h3>Smoothgressi</h3>
+    <p>Veut-tu te rendre sur la page officielle du projet <strong>Smoothgressi</strong> (smoothgressi.github.io) ?</p>
+    <button class="cancel-btn">Non</button>
+    <button class="confirm-btn">Oui</button>
+</div>
+
+<script>
+    // Animation au défilement
+    const sections = document.querySelectorAll('.skills, .projects, .contact');
+    window.addEventListener('scroll', () => {
+        sections.forEach(section => {
+            const sectionTop = section.getBoundingClientRect().top;
+            const triggerPoint = window.innerHeight - 100;
+            if (sectionTop < triggerPoint) {
+                section.classList.add('visible');
             }
+        });
+    });
 
-            if (isUnfinished === 'true') {
-                // Display the unfinished page popup if the 'unfinished' parameter is provided
-                showUnfinishedPopup();
-            }
+    // Elements
+    const overlay = document.querySelector('.overlay');
 
-            if (isUnavarliable === 'true') {
-                // Display the unfinished page popup if the 'unfinished' parameter is provided
-                showUnfinishedPopup();
+    // Gestion de la popup secret
+    const easterEgg = document.querySelector('.easter-egg');
+    const secretPopup = document.getElementById('secret-popup');
+    const closeSecretBtn = secretPopup.querySelector('.close-btn');
+
+    easterEgg.addEventListener('click', () => {
+        secretPopup.classList.add('visible');
+        overlay.classList.add('visible');
+    });
+
+    closeSecretBtn.addEventListener('click', () => {
+        secretPopup.classList.remove('visible');
+        overlay.classList.remove('visible');
+    });
+
+    overlay.addEventListener('click', () => {
+        document.querySelectorAll('.popup, .project-popup, .redirect-popup').forEach(p => p.classList.remove('visible'));
+        overlay.classList.remove('visible');
+    });
+
+    // Gestion des popups de projet
+    document.querySelectorAll('.project-link').forEach((link, index) => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (link.id === 'project1-link') {
+                document.getElementById('redirect-popup').classList.add('visible');
+            } else {
+                const projectPopup = document.getElementById(`project${index + 1}-popup`);
+                if (projectPopup) projectPopup.classList.add('visible');
             }
-        };
-    </script>
+            overlay.classList.add('visible');
+        });
+    });
+
+    document.querySelectorAll('.project-popup .close-btn').forEach(closeBtn => {
+        closeBtn.addEventListener('click', () => {
+            closeBtn.closest('.project-popup').classList.remove('visible');
+            overlay.classList.remove('visible');
+        });
+    });
+
+    // Popup de confirmation de redirection
+    const confirmBtn = document.querySelector('.confirm-btn');
+    const cancelBtn = document.querySelector('.cancel-btn');
+
+    confirmBtn.addEventListener('click', () => {
+        window.location.href = 'https://smoothgressi.github.io'; // Redirige l'utilisateur
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        document.querySelector('.redirect-popup').classList.remove('visible');
+        overlay.classList.remove('visible');
+    });
+</script>
+
 </body>
 </html>
