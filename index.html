@@ -305,7 +305,9 @@
 
 
     cancelBtn.addEventListener('click', () => {
-        document.querySelector('.popup, .project-popup, .redirect-popup').classList.remove('visible');
+        document.querySelector('.redirect-popup').classList.remove('visible');
+        document.querySelector('.popup').classList.remove('visible');
+        document.querySelector('.project-popup').classList.remove('visible');
         overlay.classList.remove('visible');
     });
     
