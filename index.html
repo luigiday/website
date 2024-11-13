@@ -205,7 +205,7 @@
 <div class="popup" id="secret-popup">
     <h3>Secret Révélé !</h3>
     <p>Félicitations ! Tu as découvert un secret bien gardé ! 🎉</p>
-    <button class="close-btn" id="closeSecretBtn">Cliquer en dehors de la popup pour fermer</button>
+    <button class="close-btn" id="closeSecretBtn">Fermer</button>
 </div>
 
 <!-- Popup pour les projets -->
@@ -226,7 +226,7 @@
 <div class="project-popup" id="from404-popup">
     <h3>Erreur 404</h3>
     <p>Désolé, mais la page que vous avez tenté d'atteindre est introuvable.</p>
-    <button class="close-btn">Cliquer en dehors de la popup pour fermer</button>
+    <button class="close-btn">Fermer</button>
 </div>
 
 <!-- Popup de confirmation de redirection -->
@@ -305,7 +305,7 @@
 
 
     cancelBtn.addEventListener('click', () => {
-        document.querySelector('.redirect-popup').classList.remove('visible');
+        document.querySelector('.popup, .project-popup, .redirect-popup').classList.remove('visible');
         overlay.classList.remove('visible');
     });
     
