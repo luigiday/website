@@ -178,22 +178,22 @@
 <header>
     <img src="https://luigiday.github.io/profile.png" alt="Photo de profil" class="profile-image">
     <h1 class="name">Luigiday</h1>
-    <p>(aka. colin524)</p>
     <p>Dévloppeur en Python (en grande partie)</p>
 </header>
 
 <section id="about">
     <h2>Présentation</h2>
-    <p>Salut ! Je suis un développeur passionné par les nouvelles technologies, les défis techniques et le développement de solutions efficaces.</p>
-    <p>Un <span class="easter-egg">secret</span> se cache ici... Clique pour le découvrir !</p>
+    <p>Salut, moi c'est Luigiday, je suis un devloppeur qui aime faire des petits (ou gros) logiciels pour regler des problèmes plus ou moins signifiant (cf. LuigidaySofts).
+    </p>
+    <p>Ah oui, vous pouvez aussi me trouver sous le pseudo <span class="easter-egg">colin524</span>.</p>
 </section>
 
 <section id="skills" class="skills">
     <h2>Compétences</h2>
     <ul>
-        <li>HTML, CSS, JavaScript</li>
-        <li>Python, Node.js, et frameworks modernes</li>
-        <li>Base de données (SQL, MongoDB)</li>
+        <li>HTML, CSS, JavaScript (un peu)</li>
+        <li>Python</li>
+        <li>Je suis en train d'essayer d'apprendre d'autres langages (Swift UI, C)</li>
     </ul>
 </section>
 
@@ -202,13 +202,13 @@
     <ul>
         <li><a href="#" id="project1-link" class="project-link">Smoothgressi : Une alternative open-source et plus simple au logiciel de modelisation Regressi</a></li>
         <li><a href="/soft-suite"  class="project-link-softs">LuigidaySofts Suite : Une suite de logiels pratiques gratuits et open-source</a></li>
-        <li><a href="#" id="project3-link" class="project-link">Projet 3: Intégration de systèmes complexes</a></li>
+        <li><a href="#" id="project3-link" class="project-link">Template : Il n'y a rien ici</a></li>
     </ul>
 </section>
 
 <section id="contact" class="contact">
     <h2>Contact</h2>
-    <p>Pour me contacter, envoyez-moi un e-mail à <strong>indisponible</strong></p>
+    <p>Pour me contacter, envoyez-moi un e-mail à <strong>luigiday@outlook.fr</strong></p>
 </section>
 
 <!-- Overlay et Popups -->
@@ -216,21 +216,21 @@
 
 <!-- Popup pour le secret -->
 <div class="popup" id="secret-popup">
-    <h3>Secret Révélé !</h3>
-    <p>Félicitations ! Tu as découvert un secret bien gardé ! 🎉</p>
+    <h3>A propos de colin524</h3>
+    <p>J'ai pris la decision de changer de pseudo car je preferai "Luigiday" et que le nom d'utilisateur est dispo quasiment partout. Mais il est encore possible de trouver la mention "crée par colin524" sur mes ancien projets.</p>
     <button class="close-btn" id="closeSecretBtn">Fermer</button>
 </div>
 
 <div class="project-popup" id="project3-popup">
-    <h3>Projet 3: Intégration de Systèmes</h3>
-    <p>Ce projet se concentre sur l'intégration de systèmes d'entreprise en utilisant des APIs RESTful et des services cloud.</p>
-    <a href="https://github.com/smoothgressi/project3" class="project-link">Voir sur GitHub</a>
+    <h3>Template</h3>
+    <p>Je vous ai dit qu'il n'y avais rien ! (bon courage pour fermer cette popup, mon site est un peu buggé)</p>
+    <a href="https://v.gd/gBucwV" class="project-link">Voir sur GitHub</a>
     <button class="close-btn">Fermer</button>
 </div>
 
 <div class="project-popup" id="from404-popup">
     <h3>Erreur 404</h3>
-    <p>Désolé, mais la page que vous avez tenté d'atteindre est introuvable.</p>
+    <p>Désolé, mais la page que vous avez tenté d'atteindre est introuvable. Pour fermer cette popup, cliquez en dehors d'elle.</p>
     <button class="close-btn">Fermer</button>
 </div>
 
@@ -291,7 +291,7 @@
         closeBtn.addEventListener('click', () => {
             closeBtn.closest('.project-popup').classList.remove('visible');
             overlay.classList.remove('visible');
-            window.location.href = 'https://colin524.github.io';
+            window.location.href = 'https://luigiday.github.io';
         });
     });
 
