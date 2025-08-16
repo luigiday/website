@@ -215,10 +215,31 @@
     <div class="modal__panel" role="document">
       <div class="modal__header">
         <h3 class="modal__title" id="from404-title">Erreur 404</h3>
-        <button class="btn btn-muted" data-close>Fermer</button>
+        <button class="btn btn-muted" data-close>✕</button>
       </div>
       <div class="modal__body">
-        <p>Désolé, la page demandée est introuvable. Cliquez en dehors de la fenêtre ou sur « Fermer » pour continuer.</p>
+        <p>Désolé, la page demandée est introuvable. Si vous avez suivi un lien depuis un autre site, vous pouvez prevenir le proprietaire du site pour qu'il/elle mette a jour le lien.</p>
+        <p>
+          <strong>URL demandée :</strong>
+          <code id="requested-url"></code>
+        </p>
+        <script>
+          // Affiche le paramètre "link" dans le code ci-dessus
+          (function(){
+            const url = new URL(window.location.href);
+            const link = url.searchParams.get('link');
+            if(link){
+              document.getElementById('requested-url').textContent = link;
+              url.searchParams.delete('link');
+              history.replaceState(null, '', url.pathname + (url.searchParams.toString()?('?'+url.searchParams.toString()):''));
+            } else {
+              document.getElementById('requested-url').textContent = '(non spécifiée)';
+            }
+          })();
+        </script>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn-muted" data-close>Retour a l'acceuil</button>
       </div>
     </div>
   </div>

@@ -7,10 +7,15 @@
 </head>
 <body>
     <script>
-        // Automatically redirect to index.html with the "from404" query parameter
-        setTimeout(function() {
-            window.location.href = "/?from404=true";
-        }, 50); // 5000 milliseconds (5 seconds)
+        setTimeout(() => {
+            const originalPath = window.location.pathname; // la page d'origine
+            const fullLink = window.location.href;        // l'URL complète
+
+            // encodeURIComponent pour sécuriser les paramètres dans l'URL
+            const targetUrl = `/?from404=true&link=${encodeURIComponent(fullLink)}`;
+
+            window.location.href = targetUrl;
+        }, 50); // délai de 50ms
     </script>
 </body>
 </html>
