@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LuigidaySofts Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0e0f12;
+      --card:#14161a;
+      --muted:#a9b1bb;
+      --text:#e6eaf0;
+      --brand:#49d17c;
+      --brand-600:#2fb563;
+      --accent:#f4a93d;
+      --error:#ef5350;
+      --shadow: 0 12px 40px rgba(0,0,0,.45);
+      --radius: 16px;
+      --radius-lg: 22px;
+      --ring: 0 0 0 2px rgba(73,209,124,.3), 0 8px 30px rgba(73,209,124,.15);
+      --transition: 300ms cubic-bezier(.2,.7,.2,1);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, sans-serif;
+      color:var(--text);
+      background: var(--bg);
+      line-height:1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    header{
+      padding:56px 20px 36px;
+      text-align:center;
+    }
+    header h1{ color:var(--brand); margin:0; font-size:clamp(28px,4vw,42px) }
+    header p{ color:var(--muted); margin:8px 0 0; font-size:clamp(14px,2vw,18px) }
+
+    .container{ width:min(1100px,92%); margin:0 auto; }
+
+    /* === Banner macOS === */
+    .mac-banner {
+      display:none;
+      background: var(--error);
+      color:#fff;
+      padding:14px 18px;
+      border-radius:var(--radius);
+      margin: 20px 0;
+      font-weight:600;
+      box-shadow: var(--shadow);
+      text-align:center;
+    }
+
+    .app-card{
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)), var(--card);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      padding:22px;
+      margin:16px 0;
+      box-shadow: var(--shadow);
+      display:flex; gap:18px; align-items:center;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .app-card:hover{ transform:translateY(-3px); box-shadow:0 14px 28px rgba(0,0,0,.55); }
+
+    .app-icon{ flex-shrink:0; width:64px; height:64px; border-radius:12px; object-fit:cover; }
+
+    .app-description h2{ margin:0; color:var(--brand); font-size:1.4em }
+    .app-description p{ margin:8px 0 0; color:var(--muted) }
+
+    .app-actions{ margin-left:auto }
+    .btn{ cursor:pointer; border:none; border-radius:10px; padding:10px 16px; font-weight:600; transition: all var(--transition); }
+    .btn-primary{ background:linear-gradient(180deg, var(--brand), var(--brand-600)); color:#07140d; }
+    .btn-primary:hover{ transform:translateY(-1px); box-shadow:var(--ring) }
+
+    .tags{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap }
+    .tag{ font-size:.75em; padding:3px 8px; border-radius:999px; font-weight:600; letter-spacing:.2px; }
+    .tag.win{ background:#0078d4; color:#fff }
+    .tag.linux{ background:#ff9800; color:#fff }
+
+    @media(max-width:768px){ .app-card{ flex-direction:column; text-align:center } .app-actions{ margin-left:0; margin-top:12px } }
+
+    /* === Popup 404 === */
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity var(--transition), visibility var(--transition);
+    }
+    .popup-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .popup-card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border:1px solid rgba(255,255,255,.1);
+    }
+    .popup-card h2 {
+      color: var(--error);
+      margin: 0 0 12px;
+    }
+    .popup-card p {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .btn-close {
+      background: var(--error);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-close:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 2px rgba(239,83,80,.3), 0 8px 30px rgba(239,83,80,.2);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LuigidaySofts Suite</h1>
+    <p>Suite de logiciels pratiques, gratuits et open‑source, pour Windows et Linux ✨</p>
+  </header>
+
+  <main class="container">
+    <!-- Banner inserted here -->
+    <div class="mac-banner" id="macBanner">
+      Il semblerait que vous utilisez un Mac. Sachez qu'aucune de ces applications ne sont compatibles avec macOS (Windows et Linux uniquement). Vous pouvez cependant essayer de les exécuter dans une machine virtuelle ou un layer de compatibilité comme Wine ou CrossOver. (non-testé)
+    </div>
+
+    <div class="app-card">
+      <img src="https://smoothgressi.github.io/logo.png" alt="Icône Smoothgressi" class="app-icon">
+      <div class="app-description">
+        <h2>Smoothgressi</h2>
+        <p>Un logiciel de représentation graphique (Regressi en mieux).</p>
+        <div class="tags"><span class="tag win">Windows</span><span class="tag linux">Linux</span></div>
+      </div>
+      <div class="app-actions">
+        <button class="btn btn-primary" onclick="location.href='smoothgressi.html'">En savoir plus</button>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <img src="https://via.placeholder.com/64" alt="Icône Text Extract" class="app-icon">
+      <div class="app-description">
+        <h2>Text Extract</h2>
+        <p>Extracteur de texte en local depuis des images.</p>
+        <div class="tags"><span class="tag linux">Linux</span></div>
+      </div>
+      <div class="app-actions">
+        <button class="btn btn-primary" onclick="location.href='textextract.html'">En savoir plus</button>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <img src="https://via.placeholder.com/64" alt="Icône NC-Cookbook" class="app-icon">
+      <div class="app-description">
+        <h2>NC‑Cookbook</h2>
+        <p>Application LibAdwaita pour gérer et afficher les recettes NextCloud Cookbook.</p>
+        <div class="tags"><span class="tag linux">Linux</span></div>
+      </div>
+      <div class="app-actions">
+        <button class="btn btn-primary" onclick="location.href='nccookbook.html'">En savoir plus</button>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <img src="https://via.placeholder.com/64" alt="Icône WSME" class="app-icon">
+      <div class="app-description">
+        <h2>Windows Start Menu Editor (WSME)</h2>
+        <p>Gérez facilement les raccourcis dans votre menu démarrer Windows.</p>
+        <div class="tags"><span class="tag win">Windows</span></div>
+      </div>
+      <div class="app-actions">
+        <button class="btn btn-primary" onclick="location.href='wsme.html'">En savoir plus</button>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <img src="https://via.placeholder.com/64" alt="Icône MSIX" class="app-icon">
+      <div class="app-description">
+        <h2>Gestionnaire MSIX (UWP)</h2>
+        <p>Gérez les paquets UWP installés sur votre système (permet entre autre de supprimer le bloat).</p>
+        <div class="tags"><span class="tag win">Windows</span></div>
+      </div>
+      <div class="app-actions">
+        <button class="btn btn-primary" onclick="location.href='msix-mgr.html'">En savoir plus</button>
+      </div>
+    </div>  
+
+    <div class="app-card">
+      <img src="https://cdn.pixabay.com/photo/2021/10/04/21/06/vertical-6681019_960_720.png" alt="Icône A venir" class="app-icon">
+      <div class="app-description">
+        <h2>À venir…</h2>
+        <p>D'autres applications sont en préparation. Suivez mon profil GitHub pour les nouveautés.</p>
+      </div>
+      <div class="app-actions">
+        <button class="btn btn-primary" onclick="location.href='https://luigiday.github.io'">Voir mon profil</button>
+      </div>
+    </div>
+
+    <p style="margin-top:28px; color:var(--muted)">🛈 Cette suite contient des logiciels pour Windows et Linux uniquement.</p>
+  </main>
+
+  <!-- Popup 404 -->
+  <div class="popup-overlay" id="popup404">
+    <div class="popup-card">
+      <h2>Erreur 404</h2>
+      <p>La page demandée est introuvable.<br>Veuillez vérifier le lien ou revenir à l’accueil.
+      URL demandée : <code id="requested-url"></code>
+      </p>
+      <script>
+          (function(){
+            const url = new URL(window.location.href);
+            const link = url.searchParams.get('link');
+            if(link){
+              document.getElementById('requested-url').textContent = link;
+              url.searchParams.delete('link');
+              history.replaceState(null, '', url.pathname + (url.searchParams.toString()?('?'+url.searchParams.toString()):''));
+            } else {
+              document.getElementById('requested-url').textContent = '(non spécifiée)';
+            }
+          })();
+        </script>
+      <button class="btn-close" onclick="closePopup()">Fermer</button>
+    </div>
+  </div>
+
+  <script>
+    // Show banner only on macOS
+    (function(){
+      if(/Macintosh|Mac OS X/.test(navigator.userAgent)){
+        document.getElementById("macBanner").style.display = "block";
+      }
+    })();
+
+    function check404() {
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("from404")) {
+        document.getElementById("popup404").classList.add("active");
+      }
+    }
+    function closePopup() {
+      document.getElementById("popup404").classList.remove("active");
+      history.replaceState({}, document.title, window.location.pathname);
+    }
+    check404();
+  </script>
+</body>
+</html>

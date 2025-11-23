@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Introuvable</title>
+</head>
+<body>
+    <script>
+        // Redirection automatique avec deux paramètres : from404 et link
+        setTimeout(() => {
+            const originalPath = window.location.pathname; // la page d'origine
+            const fullLink = window.location.href;        // l'URL complète
+
+            // encodeURIComponent pour sécuriser les paramètres dans l'URL
+            const targetUrl = `https://luigiday.vercel.app/soft-suite?from404=${encodeURIComponent(originalPath)}&link=${encodeURIComponent(fullLink)}`;
+
+            window.location.href = targetUrl;
+        }, 50); // délai de 50ms
+    </script>
+</body>
+</html>

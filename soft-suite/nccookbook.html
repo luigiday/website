@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NC-Cookbook – LuigidaySofts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0e0f12;
+      --card:#14161a;
+      --muted:#a9b1bb;
+      --text:#e6eaf0;
+      --brand:#49d17c;
+      --brand-600:#2fb563;
+      --accent:#f4a93d;
+      --error:#ef5350;
+      --shadow: 0 12px 40px rgba(0,0,0,.45);
+      --radius: 16px;
+      --radius-lg: 22px;
+      --ring: 0 0 0 2px rgba(73,209,124,.3), 0 8px 30px rgba(73,209,124,.15);
+      --transition: 300ms cubic-bezier(.2,.7,.2,1);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, sans-serif;
+      color:var(--text);
+      background: var(--bg);
+      line-height:1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    header{
+      padding:56px 20px 24px;
+      text-align:center;
+    }
+    header h1{ color:var(--brand); margin:0; font-size:clamp(28px,4vw,42px) }
+    header p{ color:var(--muted); margin:8px 0 0; font-size:clamp(14px,2vw,18px) }
+
+    .container{ width:min(950px,92%); margin:0 auto; }
+
+    .app-hero{
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)), var(--card);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius-lg);
+      padding:28px;
+      box-shadow: var(--shadow);
+      display:flex; gap:22px; align-items:center;
+      margin-bottom:28px;
+      flex-wrap:wrap;
+    }
+    .app-hero img{ width:96px; height:96px; border-radius:18px; object-fit:cover }
+    .app-hero h2{ margin:0; color:var(--brand); font-size:1.8em }
+    .app-hero p{ margin:8px 0 0; color:var(--muted) }
+    .tags{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap }
+    .tag{ font-size:.75em; padding:4px 10px; border-radius:999px; font-weight:600 }
+    .tag.win{ background:#0078d4; color:#fff }
+    .tag.linux{ background:#ff9800; color:#fff }
+
+    .btn{ cursor:pointer; border:none; border-radius:10px; padding:12px 20px; font-weight:600; transition: all var(--transition); }
+    .btn-primary{ background:linear-gradient(180deg, var(--brand), var(--brand-600)); color:#07140d; }
+    .btn-primary:hover{ transform:translateY(-1px); box-shadow:var(--ring) }
+    .btn-disabled{ background:#555; color:#aaa; cursor:not-allowed }
+
+    .section{
+      background: var(--card);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      padding:22px;
+      margin:20px 0;
+      box-shadow: var(--shadow);
+    }
+    .section h3{ margin:0 0 12px; color:var(--brand) }
+    .features{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px }
+    .feature{
+      background:rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      padding:16px;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .feature:hover{ transform:translateY(-3px); box-shadow:0 12px 24px rgba(0,0,0,.45) }
+    .feature h4{ margin:0 0 6px; color:var(--accent); font-size:1.1em }
+    .feature p{ margin:0; color:var(--muted); font-size:.95em }
+
+    .back-link{ display:inline-block; margin-top:24px; color:var(--muted); text-decoration:none; font-weight:600 }
+    .back-link:hover{ color:var(--brand) }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NC-Cookbook</h1>
+    <p>Application LibAdwaita pour gérer et afficher les recettes NextCloud Cookbook</p>
+  </header>
+
+  <main class="container">
+    <div class="app-hero">
+      <img src="about:blank" alt="Icône WSME">
+      <div>
+        <h2>NC-Cookbook</h2>
+        <p>Application non officielle pour gerer ses recettes sur Nextcloud Cookbook (WiP)</p>
+        <div class="tags"><span class="tag linux">Linux (LibAdwaita)</span></div>
+      </div>
+      <div style="margin-left:auto">
+        <button id="download-btn" class="btn btn-primary">Télécharger</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Description</h3>
+    <p>
+    NC-Cookbook est une application non officielle permettant de gérer et d’afficher vos recettes Nextcloud Cookbook synchronisées dans un dossier local. Parcourez, consultez et organisez facilement vos recettes stockées sur votre instance Nextcloud, directement depuis votre ordinateur, avec une interface moderne et adaptée à Linux.
+    </p>
+    </div>
+
+    <div class="section">
+      <h3>Fonctionnalités principales</h3>
+      <div class="features">
+        <div class="feature">
+          <h4>Afficher vos recettes</h4>
+          <p>Affichez vos recettes dans une interface simple et intuitive.</p>
+        </div>
+        <div class="feature">
+          <h4>En ligne ou local</h4>
+          <p>Vu que le dossier est sycronisé en local, vous pouvez continuer a afficher vos recettes meme hors ligne</p>
+        </div>
+        <div class="feature">
+          <h4>Interface moderne</h4>
+          <p>Design clair et extremement simple.</p>
+        </div>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-link">← Retour à la liste des applications</a>
+  </main>
+  <script>
+    function detectOS() {
+      const platform = navigator.platform.toLowerCase();
+      const btn = document.getElementById('download-btn');
+      if (platform.includes('linux')) {
+        btn.classList.remove('btn-disabled');
+        btn.onclick = () => window.location.href = 'https://github.com/luigiday/NC-Cookbook-GTK';
+      } else {
+        btn.classList.add('btn-disabled');
+        btn.innerText = 'Disponible uniquement pour Linux';
+        btn.onclick = null;
+      }
+    }
+    window.onload = detectOS;
+  </script>
+</body>
+</html>
+            
