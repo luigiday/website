@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TURBO KART — Racing Game</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;700;900&display=swap');
+
+  :root {
+    --bg: #0a0a1a;
+    --track: #2a2a3a;
+    --grass: #1a3a1a;
+    --road: #3a3a4a;
+    --line: #f0e040;
+    --p1: #ff3040;
+    --p2: #3080ff;
+    --p3: #ff9020;
+    --p4: #20d060;
+    --ui-bg: rgba(10,10,30,0.92);
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    overflow: hidden;
+    width: 100vw; height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+
+  /* ===== MENU ===== */
+  #menu {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at 50% 40%, #1a1a4a 0%, #0a0a1a 70%);
+    z-index: 100;
+  }
+
+  .menu-title {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(3rem, 8vw, 7rem);
+    color: var(--gold);
+    text-shadow: 0 0 30px #ffa020, 4px 4px 0 #a06000, 0 0 60px #ff8000;
+    letter-spacing: 4px;
+    animation: titlePulse 2s ease-in-out infinite;
+    margin-bottom: 0.2em;
+  }
+  .menu-sub {
+    font-size: 1.1rem;
+    color: #aaa;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+  }
+
+  @keyframes titlePulse {
+    0%,100% { text-shadow: 0 0 30px #ffa020, 4px 4px 0 #a06000, 0 0 60px #ff8000; }
+    50% { text-shadow: 0 0 50px #ffd700, 4px 4px 0 #a06000, 0 0 100px #ffaa00; }
+  }
+
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 220px);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .mode-btn {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 1.2rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+  }
+  .mode-btn:hover, .mode-btn.selected {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,150,0,0.1));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(255,180,0,0.3);
+  }
+  .mode-btn .icon { font-size: 2.2rem; margin-bottom: 0.4rem; }
+  .mode-btn .label { font-size: 1.1rem; font-weight: 900; margin-bottom: 0.2rem; }
+  .mode-btn .desc { font-size: 0.75rem; color: #999; }
+
+  .section-label {
+    font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;
+    color: #666; margin-bottom: 0.8rem; text-align: center;
+  }
+
+  .map-grid {
+    display: grid; grid-template-columns: repeat(3, 140px); gap: 0.7rem;
+    margin-bottom: 2rem;
+  }
+  .map-btn {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 0.8rem 0.5rem;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+    color: #fff; font-family: 'Nunito', sans-serif;
+  }
+  .map-btn:hover, .map-btn.selected {
+    border-color: #60c0ff;
+    background: rgba(60,160,255,0.15);
+    transform: translateY(-2px);
+  }
+  .map-btn .map-icon { font-size: 1.6rem; margin-bottom: 0.3rem; }
+  .map-btn .map-name { font-size: 0.9rem; font-weight: 700; }
+
+  .laps-row {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .laps-btn {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 50%; cursor: pointer;
+    color: #fff; font-size: 1.2rem; font-weight: 900;
+    transition: all 0.2s; line-height: 1;
+  }
+  .laps-btn:hover { background: rgba(255,215,0,0.2); border-color: var(--gold); }
+  #laps-display { font-size: 1.3rem; font-weight: 900; min-width: 60px; text-align: center; }
+
+  .start-btn {
+    padding: 1rem 3.5rem;
+    background: linear-gradient(135deg, #ff9020, #ffcc00);
+    border: none; border-radius: 50px;
+    font-family: 'Boogaloo', cursive;
+    font-size: 1.8rem; color: #1a0a00;
+    cursor: pointer; letter-spacing: 2px;
+    box-shadow: 0 6px 24px rgba(255,150,0,0.5);
+    transition: all 0.2s;
+  }
+  .start-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 36px rgba(255,180,0,0.7);
+  }
+
+  .controls-hint {
+    margin-top: 1.5rem;
+    font-size: 0.75rem; color: #555; text-align: center;
+    line-height: 1.8;
+  }
+
+  /* ===== GAME CANVAS ===== */
+  #game-container {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column;
+  }
+
+  #hud {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 60px;
+    background: rgba(10,10,30,0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 2px solid rgba(255,215,0,0.3);
+    display: flex; align-items: center; padding: 0 1rem;
+    gap: 1rem; z-index: 10;
+    font-family: 'Boogaloo', cursive;
+  }
+
+  .hud-item {
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 80px;
+  }
+  .hud-label { font-size: 0.65rem; letter-spacing: 2px; color: #888; font-family: 'Nunito', sans-serif; }
+  .hud-value { font-size: 1.4rem; color: var(--gold); line-height: 1; }
+
+  #standings {
+    position: absolute; right: 0; top: 60px; bottom: 0;
+    width: 140px; background: rgba(10,10,30,0.8);
+    border-left: 2px solid rgba(255,255,255,0.1);
+    padding: 0.8rem 0.6rem; z-index: 10;
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .stand-title { font-family: 'Boogaloo', cursive; font-size: 0.85rem; color: #888; letter-spacing: 2px; margin-bottom: 0.4rem; }
+  .stand-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.35rem 0.5rem; border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    font-size: 0.8rem; font-weight: 700;
+    transition: background 0.3s;
+  }
+  .stand-item.player { background: rgba(255,48,64,0.2); border: 1px solid rgba(255,48,64,0.4); }
+  .stand-pos { font-family: 'Boogaloo', cursive; font-size: 1rem; color: var(--gold); min-width: 18px; }
+  .stand-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .stand-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.75rem; }
+  .stand-lap { font-size: 0.7rem; color: #888; }
+
+  canvas {
+    display: block;
+    position: absolute;
+    top: 60px; left: 0;
+    right: 140px;
+    bottom: 0;
+  }
+
+  /* ===== COUNTDOWN ===== */
+  #countdown {
+    position: absolute;
+    inset: 0; display: none;
+    align-items: center; justify-content: center;
+    z-index: 20; pointer-events: none;
+  }
+  .countdown-num {
+    font-family: 'Boogaloo', cursive;
+    font-size: 15vmin;
+    color: #fff;
+    text-shadow: 0 0 40px currentColor, 4px 4px 0 rgba(0,0,0,0.5);
+    animation: countAnim 0.8s ease-out forwards;
+  }
+  @keyframes countAnim {
+    0% { transform: scale(2); opacity: 0; }
+    30% { opacity: 1; }
+    80% { transform: scale(0.9); opacity: 1; }
+    100% { transform: scale(1.05); opacity: 0; }
+  }
+
+  /* ===== FINISH SCREEN ===== */
+  #finish-screen {
+    position: absolute; inset: 0;
+    background: rgba(10,10,30,0.95);
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 50;
+  }
+  .finish-title {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(3rem, 8vw, 6rem);
+    color: var(--gold);
+    text-shadow: 0 0 40px #ffa020;
+    margin-bottom: 1.5rem;
+    animation: titlePulse 1.5s ease-in-out infinite;
+  }
+  .podium {
+    display: flex; align-items: flex-end; gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .podium-step {
+    display: flex; flex-direction: column; align-items: center;
+    border-radius: 12px 12px 0 0; padding: 1rem 1.5rem;
+    min-width: 120px;
+  }
+  .podium-1 { height: 160px; background: linear-gradient(180deg, #ffd700, #a07000); }
+  .podium-2 { height: 120px; background: linear-gradient(180deg, #c0c0c0, #606060); }
+  .podium-3 { height: 90px; background: linear-gradient(180deg, #cd7f32, #7a4010); }
+  .podium-rank { font-family: 'Boogaloo', cursive; font-size: 2.5rem; }
+  .podium-kart { font-size: 2rem; }
+  .podium-name { font-weight: 900; font-size: 0.9rem; margin-top: 0.3rem; }
+  .podium-time { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
+
+  .results-table {
+    width: min(90vw, 500px);
+    border-collapse: collapse; margin-bottom: 2rem;
+  }
+  .results-table th {
+    font-family: 'Boogaloo', cursive; font-size: 0.8rem;
+    letter-spacing: 2px; color: #888; text-transform: uppercase;
+    padding: 0.4rem 0.8rem; border-bottom: 1px solid #333;
+  }
+  .results-table td {
+    padding: 0.5rem 0.8rem; font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .results-table tr:first-child td { color: var(--gold); font-weight: 900; }
+
+  .finish-btns { display: flex; gap: 1rem; }
+  .finish-btn {
+    padding: 0.8rem 2rem;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    border-radius: 50px; cursor: pointer;
+    color: #fff; font-family: 'Nunito', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    transition: all 0.2s;
+  }
+  .finish-btn:hover { border-color: var(--gold); background: rgba(255,215,0,0.15); transform: translateY(-2px); }
+  .finish-btn.primary { background: linear-gradient(135deg, #ff9020, #ffcc00); color: #1a0a00; border-color: transparent; }
+
+  /* item flash */
+  #item-display {
+    position: absolute; bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.5rem;
+    background: rgba(0,0,0,0.7);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 12px; padding: 0.4rem 1rem;
+    z-index: 10; display: none;
+    animation: itemPop 0.3s ease-out;
+  }
+  @keyframes itemPop {
+    0% { transform: translateX(-50%) scale(0.5); }
+    60% { transform: translateX(-50%) scale(1.2); }
+    100% { transform: translateX(-50%) scale(1); }
+  }
+
+  #speed-display {
+    position: absolute; bottom: 20px; left: 20px;
+    font-family: 'Boogaloo', cursive;
+    font-size: 2.5rem; color: var(--gold);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    z-index: 10;
+  }
+  #speed-unit { font-size: 1rem; color: #aaa; margin-left: 4px; }
+
+  /* minimap */
+  #minimap-canvas {
+    position: absolute; bottom: 10px; right: 150px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    background: rgba(10,10,30,0.8);
+    z-index: 10;
+  }
+
+  /* mode indicator */
+  #mode-indicator {
+    position: absolute; top: 70px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Boogaloo', cursive;
+    font-size: 1rem; letter-spacing: 3px; color: #888;
+    z-index: 10; pointer-events: none;
+  }
+
+  /* item use key */
+  #use-item-hint {
+    position: absolute; bottom: 20px; right: 160px;
+    font-size: 0.75rem; color: #555; z-index: 10;
+    text-align: right;
+  }
+
+  /* boost effect */
+  #boost-overlay {
+    position: absolute; inset: 0; z-index: 8;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(255,150,0,0.3) 100%);
+    opacity: 0; transition: opacity 0.3s;
+  }
+
+  /* hit effect */
+  #hit-overlay {
+    position: absolute; inset: 0; z-index: 9;
+    pointer-events: none;
+    background: rgba(255,0,0,0.4);
+    opacity: 0; transition: opacity 0.1s;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== MENU ===== -->
+<div id="menu">
+  <div class="menu-title">🏎️ TURBO KART</div>
+  <div class="menu-sub">Racing Arcade</div>
+
+  <div class="section-label">MODE DE JEU</div>
+  <div class="mode-grid">
+    <div class="mode-btn selected" data-mode="race" onclick="selectMode('race',this)">
+      <div class="icon">🏁</div>
+      <div class="label">Course</div>
+      <div class="desc">Gagne la course contre les IA</div>
+    </div>
+    <div class="mode-btn" data-mode="timeattack" onclick="selectMode('timeattack',this)">
+      <div class="icon">⏱️</div>
+      <div class="label">Time Attack</div>
+      <div class="desc">Meilleur temps sur 3 tours</div>
+    </div>
+    <div class="mode-btn" data-mode="elimination" onclick="selectMode('elimination',this)">
+      <div class="icon">💀</div>
+      <div class="label">Élimination</div>
+      <div class="desc">Dernier éliminé à chaque tour</div>
+    </div>
+    <div class="mode-btn" data-mode="battle" onclick="selectMode('battle',this)">
+      <div class="icon">💣</div>
+      <div class="label">Battle</div>
+      <div class="desc">Elimine les adversaires avec des items</div>
+    </div>
+  </div>
+
+  <div class="section-label">CIRCUIT</div>
+  <div class="map-grid">
+    <div class="map-btn selected" data-map="circuit1" onclick="selectMap('circuit1',this)">
+      <div class="map-icon">🏝️</div>
+      <div class="map-name">Plage</div>
+    </div>
+    <div class="map-btn" data-map="circuit2" onclick="selectMap('circuit2',this)">
+      <div class="map-icon">🌋</div>
+      <div class="map-name">Volcan</div>
+    </div>
+    <div class="map-btn" data-map="circuit3" onclick="selectMap('circuit3',this)">
+      <div class="map-icon">🏔️</div>
+      <div class="map-name">Montagne</div>
+    </div>
+  </div>
+
+  <div class="section-label" id="laps-label">NOMBRE DE TOURS</div>
+  <div class="laps-row">
+    <button class="laps-btn" onclick="changeLaps(-1)">−</button>
+    <div id="laps-display">3 tours</div>
+    <button class="laps-btn" onclick="changeLaps(1)">+</button>
+  </div>
+
+  <button class="start-btn" onclick="startGame()">DÉMARRER !</button>
+
+  <div class="controls-hint">
+    ⬆⬇⬅➡ ou WASD — Conduire &nbsp;|&nbsp; ESPACE — Utiliser item &nbsp;|&nbsp; ESC — Menu
+  </div>
+</div>
+
+<!-- ===== GAME ===== -->
+<div id="game-container">
+  <div id="hud">
+    <div class="hud-item">
+      <span class="hud-label">TOUR</span>
+      <span class="hud-value" id="hud-lap">1/3</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">TEMPS</span>
+      <span class="hud-value" id="hud-time">0:00.0</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">MEILLEUR</span>
+      <span class="hud-value" id="hud-best">--:--.-</span>
+    </div>
+    <div class="hud-item" id="hud-pos-container">
+      <span class="hud-label">POSITION</span>
+      <span class="hud-value" id="hud-pos">1st</span>
+    </div>
+    <div class="hud-item" id="hud-lives-container" style="display:none">
+      <span class="hud-label">VIES</span>
+      <span class="hud-value" id="hud-lives">❤️❤️❤️</span>
+    </div>
+    <div style="flex:1"></div>
+    <div class="hud-item" id="hud-mode-label">
+      <span class="hud-label">MODE</span>
+      <span class="hud-value" style="font-size:1rem; color:#aaa" id="hud-mode-name">COURSE</span>
+    </div>
+  </div>
+
+  <div id="standings">
+    <div class="stand-title">CLASSEMENT</div>
+    <div id="standings-list"></div>
+  </div>
+
+  <canvas id="gameCanvas"></canvas>
+  <canvas id="minimap-canvas" width="120" height="100"></canvas>
+
+  <div id="countdown"></div>
+  <div id="item-display">🎁</div>
+  <div id="speed-display">0<span id="speed-unit">km/h</span></div>
+  <div id="mode-indicator"></div>
+  <div id="use-item-hint">ESPACE — Utiliser item</div>
+  <div id="boost-overlay"></div>
+  <div id="hit-overlay"></div>
+</div>
+
+<!-- ===== FINISH SCREEN ===== -->
+<div id="finish-screen">
+  <div class="finish-title" id="finish-title">ARRIVÉE !</div>
+  <div class="podium" id="podium"></div>
+  <table class="results-table" id="results-table">
+    <thead>
+      <tr>
+        <th>#</th><th>Pilote</th><th>Meilleur tour</th><th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="results-body"></tbody>
+  </table>
+  <div class="finish-btns">
+    <button class="finish-btn" onclick="returnToMenu()">Menu</button>
+    <button class="finish-btn primary" onclick="restartGame()">Rejouer</button>
+  </div>
+</div>
+
+<script>
+// ========== CONFIG ==========
+const KART_COLORS = ['#ff3040','#3080ff','#ff9020','#20d060','#cc40ff','#ff60a0','#40ccff','#ffee40'];
+const KART_EMOJIS = ['🔴','🔵','🟠','🟢','🟣','🩷','🩵','🟡'];
+const KART_NAMES = ['Joueur','Speedy','Turbo','Rocket','Flash','Blaze','Storm','Nitro'];
+
+let selectedMode = 'race';
+let selectedMap = 'circuit1';
+let totalLaps = 3;
+let gameState = null;
+let animFrame = null;
+
+function selectMode(m, el) {
+  selectedMode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('laps-label').textContent = m === 'battle' ? 'VIES PAR JOUEUR' : 'NOMBRE DE TOURS';
+  document.getElementById('laps-display').textContent = m === 'battle' ? `${totalLaps} vies` : `${totalLaps} tours`;
+}
+
+function selectMap(m, el) {
+  selectedMap = m;
+  document.querySelectorAll('.map-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function changeLaps(d) {
+  totalLaps = Math.max(1, Math.min(10, totalLaps + d));
+  const isBattle = selectedMode === 'battle';
+  document.getElementById('laps-display').textContent = `${totalLaps} ${isBattle ? 'vies' : 'tours'}`;
+}
+
+// ========== TRACK DEFINITIONS ==========
+const TRACKS = {
+  circuit1: { name:'Plage', colors:{ grass:'#1a6a20', road:'#d4c090', outline:'#a08060', line:'#fff8e0', bg:'#0a4a7a' }, numAI: 5 },
+  circuit2: { name:'Volcan', colors:{ grass:'#3a1a0a', road:'#4a3a3a', outline:'#2a1a1a', line:'#ff8040', bg:'#1a0a0a' }, numAI: 5 },
+  circuit3: { name:'Montagne', colors:{ grass:'#1a3a4a', road:'#8090a0', outline:'#5060708', line:'#e0e8ff', bg:'#0a1a2a' }, numAI: 5 },
+};
+
+// Track path points (normalized 0-1)
+function buildTrackPath(mapId, W, H) {
+  const paths = {
+    circuit1: [
+      [0.1,0.2],[0.3,0.12],[0.55,0.12],[0.75,0.15],[0.88,0.25],[0.9,0.45],
+      [0.85,0.65],[0.7,0.78],[0.55,0.82],[0.5,0.75],[0.55,0.65],[0.65,0.6],
+      [0.7,0.5],[0.6,0.42],[0.45,0.42],[0.35,0.5],[0.3,0.62],[0.35,0.75],
+      [0.2,0.82],[0.08,0.75],[0.05,0.55],[0.05,0.38],[0.1,0.2]
+    ],
+    circuit2: [
+      [0.15,0.15],[0.5,0.1],[0.82,0.15],[0.88,0.4],[0.75,0.58],[0.85,0.72],
+      [0.78,0.88],[0.5,0.9],[0.25,0.88],[0.15,0.75],[0.08,0.55],[0.12,0.35],[0.15,0.15]
+    ],
+    circuit3: [
+      [0.12,0.12],[0.4,0.08],[0.65,0.12],[0.85,0.25],[0.88,0.5],[0.82,0.68],
+      [0.7,0.82],[0.5,0.88],[0.3,0.85],[0.15,0.72],[0.08,0.5],
+      [0.12,0.32],[0.25,0.22],[0.12,0.12]
+    ]
+  };
+  const pts = paths[mapId] || paths.circuit1;
+  return pts.map(([x,y]) => ({ x: x*W, y: y*H }));
+}
+
+// ========== GAME ENGINE ==========
+class Game {
+  constructor(canvas, minimapCanvas, mode, mapId, laps) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.minimapCanvas = minimapCanvas;
+    this.minimapCtx = minimapCanvas.getContext('2d');
+    this.mode = mode;
+    this.mapId = mapId;
+    this.totalLaps = laps;
+    this.track = TRACKS[mapId];
+    this.W = canvas.width;
+    this.H = canvas.height;
+    this.trackPath = buildTrackPath(mapId, this.W, this.H);
+    this.trackWidth = Math.min(this.W, this.H) * 0.11;
+    this.items = [];
+    this.projectiles = [];
+    this.itemBoxes = [];
+    this.running = false;
+    this.paused = false;
+    this.raceStarted = false;
+    this.raceFinished = false;
+    this.startTime = 0;
+    this.elapsedTime = 0;
+    this.keys = {};
+    this.karts = [];
+    this.numKarts = (mode === 'battle') ? 6 : (laps > 5 ? 4 : 6);
+    this.battleLives = laps;
+    this.eliminationHistory = [];
+    this.finishOrder = [];
+    this.cameraX = 0; this.cameraY = 0;
+    this.cameraSmooth = 0.1;
+    this.boostTimer = 0;
+
+    this.buildItemBoxes();
+    this.buildKarts();
+    this.setupInput();
+  }
+
+  resize(W, H) {
+    this.W = W; this.H = H;
+    this.trackPath = buildTrackPath(this.mapId, W, H);
+    this.trackWidth = Math.min(W, H) * 0.11;
+    this.buildItemBoxes();
+    // Reposition karts on track
+    this.karts.forEach((k, i) => {
+      const sp = this.getTrackPoint(k.pathT * this.trackPath.length);
+      k.x = sp.x; k.y = sp.y;
+    });
+  }
+
+  buildItemBoxes() {
+    this.itemBoxes = [];
+    const n = 8;
+    for (let i = 0; i < n; i++) {
+      const t = i / n;
+      const seg = t * (this.trackPath.length - 1);
+      const p = this.getTrackPoint(seg);
+      const off = this.trackWidth * 0.3;
+      const side = (i % 2 === 0 ? 1 : -1);
+      const dx = -(p.dy || 0) * side * off;
+      const dy = (p.dx || 0) * side * off;
+      this.itemBoxes.push({ x: p.x + dx, y: p.y + dy, active: true, respawnTimer: 0 });
+    }
+  }
+
+  buildKarts() {
+    const spawnT = this.totalLaps <= 0 ? 0 : 0;
+    for (let i = 0; i < this.numKarts; i++) {
+      const t = -i * 0.03;
+      const seg = Math.max(0, t) * (this.trackPath.length - 1);
+      const p = this.getTrackPoint((this.trackPath.length - 1) - i * 0.3 + 0.5);
+      const isPlayer = (i === 0);
+      this.karts.push({
+        x: p.x, y: p.y,
+        vx: 0, vy: 0,
+        angle: Math.atan2(
+          this.trackPath[1].y - this.trackPath[0].y,
+          this.trackPath[1].x - this.trackPath[0].x
+        ),
+        speed: 0,
+        maxSpeed: isPlayer ? 5 : (3.8 + Math.random() * 1.4),
+        accel: isPlayer ? 0.18 : (0.12 + Math.random() * 0.06),
+        friction: 0.94,
+        turnSpeed: isPlayer ? 0.045 : (0.035 + Math.random() * 0.015),
+        isPlayer,
+        color: KART_COLORS[i],
+        emoji: KART_EMOJIS[i],
+        name: KART_NAMES[i],
+        lap: 0,
+        pathT: 0,
+        lastCheckpoint: -1,
+        checkpoints: [],
+        lapTimes: [],
+        lapStart: 0,
+        bestLap: Infinity,
+        totalTime: 0,
+        finished: false,
+        finishPos: 0,
+        item: null,
+        spinTimer: 0,
+        boostTimer: 0,
+        lives: this.battleLives,
+        eliminated: false,
+        aiWaypoint: 1,
+        aiError: (Math.random() - 0.5) * this.trackWidth * 0.4,
+        aiLookahead: 2 + Math.floor(Math.random() * 3),
+        pathProgress: (this.trackPath.length - 1) - i * 0.3 + 0.5,
+        size: 12,
+        trail: [],
+      });
+    }
+    this.player = this.karts[0];
+  }
+
+  setupInput() {
+    this._keyDown = (e) => {
+      this.keys[e.code] = true;
+      if (e.code === 'Space') { e.preventDefault(); this.useItem(); }
+      if (e.code === 'Escape') { e.preventDefault(); this.goMenu(); }
+    };
+    this._keyUp = (e) => { this.keys[e.code] = false; };
+    window.addEventListener('keydown', this._keyDown);
+    window.addEventListener('keyup', this._keyUp);
+  }
+
+  destroy() {
+    window.removeEventListener('keydown', this._keyDown);
+    window.removeEventListener('keyup', this._keyUp);
+  }
+
+  goMenu() {
+    this.running = false;
+    returnToMenu();
+  }
+
+  // ===== TRACK GEOMETRY =====
+  getTrackPoint(t) {
+    const pts = this.trackPath;
+    const n = pts.length;
+    t = ((t % n) + n) % n;
+    const i = Math.floor(t);
+    const f = t - i;
+    const p0 = pts[i % n];
+    const p1 = pts[(i + 1) % n];
+    const dx = p1.x - p0.x, dy = p1.y - p0.y;
+    return { x: p0.x + dx * f, y: p0.y + dy * f, dx: dx, dy: dy };
+  }
+
+  distToTrackCenter(x, y) {
+    let minDist = Infinity, minT = 0;
+    const pts = this.trackPath;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i], p1 = pts[i+1];
+      const dx = p1.x - p0.x, dy = p1.y - p0.y;
+      const len2 = dx*dx + dy*dy;
+      if (len2 === 0) continue;
+      let t = ((x - p0.x)*dx + (y - p0.y)*dy) / len2;
+      t = Math.max(0, Math.min(1, t));
+      const cx = p0.x + t*dx, cy = p0.y + t*dy;
+      const d = Math.hypot(x - cx, y - cy);
+      if (d < minDist) { minDist = d; minT = i + t; }
+    }
+    return { dist: minDist, t: minT };
+  }
+
+  isOnTrack(x, y) {
+    return this.distToTrackCenter(x, y).dist < this.trackWidth;
+  }
+
+  // ===== KART PHYSICS =====
+  updateKart(k, dt) {
+    if (k.eliminated && this.mode !== 'battle') return;
+    if (k.spinTimer > 0) {
+      k.spinTimer -= dt;
+      k.angle += 0.15;
+      k.speed *= 0.92;
+      k.x += Math.cos(k.angle) * k.speed;
+      k.y += Math.sin(k.angle) * k.speed;
+      k.trail.push({ x: k.x, y: k.y, age: 0 });
+      this.updateProgress(k);
+      return;
+    }
+
+    let accel = 0, turn = 0;
+
+    if (k.isPlayer && this.raceStarted) {
+      const up = this.keys['ArrowUp'] || this.keys['KeyW'];
+      const down = this.keys['ArrowDown'] || this.keys['KeyS'];
+      const left = this.keys['ArrowLeft'] || this.keys['KeyA'];
+      const right = this.keys['ArrowRight'] || this.keys['KeyD'];
+      if (up) accel = 1;
+      if (down) accel = -0.5;
+      if (left) turn = -1;
+      if (right) turn = 1;
+    } else if (!k.isPlayer && this.raceStarted) {
+      // AI steering
+      const target = k.aiWaypoint;
+      const wp = this.getTrackPoint(target * this.trackPath.length / 10);
+      const errX = k.aiError * Math.cos(k.angle + Math.PI/2);
+      const errY = k.aiError * Math.sin(k.angle + Math.PI/2);
+      const tx = wp.x + errX, ty = wp.y + errY;
+      const tAngle = Math.atan2(ty - k.y, tx - k.x);
+      let dAngle = tAngle - k.angle;
+      while (dAngle > Math.PI) dAngle -= Math.PI * 2;
+      while (dAngle < -Math.PI) dAngle += Math.PI * 2;
+      turn = Math.max(-1, Math.min(1, dAngle / 0.5));
+      accel = 1;
+      if (Math.abs(dAngle) > 0.6) accel = 0.7;
+      const dist2 = Math.hypot(tx - k.x, ty - k.y);
+      if (dist2 < this.W * 0.05) {
+        k.aiWaypoint = (k.aiWaypoint + 1) % 10;
+        k.aiError = (Math.random() - 0.5) * this.trackWidth * 0.5;
+      }
+    }
+
+    // Boost
+    let speedMult = 1;
+    if (k.boostTimer > 0) {
+      k.boostTimer -= dt;
+      speedMult = 1.6;
+      if (k.isPlayer) document.getElementById('boost-overlay').style.opacity = '1';
+    } else {
+      if (k.isPlayer) document.getElementById('boost-overlay').style.opacity = '0';
+    }
+
+    k.angle += turn * k.turnSpeed * (0.5 + Math.abs(k.speed) * 0.1);
+    k.speed += accel * k.accel;
+    k.speed = Math.max(-k.maxSpeed * 0.4, Math.min(k.maxSpeed * speedMult, k.speed));
+
+    // Off-track slowdown
+    const onTrack = this.isOnTrack(k.x + Math.cos(k.angle) * k.speed, k.y + Math.sin(k.angle) * k.speed);
+    if (!onTrack) k.speed *= 0.85;
+
+    k.speed *= k.friction;
+    if (Math.abs(k.speed) < 0.01) k.speed = 0;
+
+    k.x += Math.cos(k.angle) * k.speed;
+    k.y += Math.sin(k.angle) * k.speed;
+
+    // Trail
+    if (Math.abs(k.speed) > 0.5) {
+      k.trail.push({ x: k.x, y: k.y, age: 0 });
+      if (k.trail.length > 20) k.trail.shift();
+    }
+    k.trail.forEach(t => t.age += dt * 0.5);
+
+    this.updateProgress(k);
+    this.checkItemBoxes(k);
+    this.checkProjectiles(k);
+  }
+
+  updateProgress(k) {
+    const res = this.distToTrackCenter(k.x, k.y);
+    const segLen = this.trackPath.length - 1;
+    const newT = res.t / segLen;
+    const oldT = k.pathProgress / segLen;
+
+    // Lap counting — crossing the start/finish at t~0
+    const crossThreshold = 0.05;
+    if (oldT > (1 - crossThreshold) && newT < crossThreshold && k.speed > 0) {
+      if (k.lap < this.totalLaps) {
+        const now = performance.now();
+        const lapTime = now - k.lapStart;
+        k.lapTimes.push(lapTime);
+        if (lapTime < k.bestLap) k.bestLap = lapTime;
+        k.lap++;
+        k.lapStart = now;
+        if (k.isPlayer) this.onLapComplete(k);
+        if (k.lap >= this.totalLaps && !k.finished) {
+          k.finished = true;
+          k.totalTime = performance.now() - this.startTime;
+          k.finishPos = this.finishOrder.length + 1;
+          this.finishOrder.push(k);
+          if (this.mode !== 'battle') this.checkRaceEnd();
+        }
+      }
+    }
+    k.pathProgress = res.t;
+    k.pathT = newT;
+  }
+
+  onLapComplete(k) {
+    // Elimination mode
+    if (this.mode === 'elimination') {
+      // find last kart at end of this lap
+      // (handled in checkRaceEnd)
+    }
+  }
+
+  checkRaceEnd() {
+    const active = this.karts.filter(k => !k.finished && !k.eliminated);
+    if (active.length === 0 || this.finishOrder.length >= this.numKarts) {
+      this.endRace();
+    }
+    if (this.mode === 'race' && this.player.finished) {
+      setTimeout(() => this.endRace(), 3000);
+    }
+  }
+
+  endRace() {
+    this.raceFinished = true;
+    this.running = false;
+    // Add remaining karts in order of progress
+    const remaining = this.karts.filter(k => !k.finished && !k.eliminated)
+      .sort((a, b) => (b.lap + b.pathT) - (a.lap + a.pathT));
+    remaining.forEach(k => {
+      k.finished = true;
+      k.totalTime = performance.now() - this.startTime;
+      k.finishPos = this.finishOrder.length + 1;
+      this.finishOrder.push(k);
+    });
+    setTimeout(() => showFinishScreen(this), 500);
+  }
+
+  // ===== ITEMS =====
+  checkItemBoxes(k) {
+    this.itemBoxes.forEach(box => {
+      if (!box.active) return;
+      if (Math.hypot(k.x - box.x, k.y - box.y) < 22) {
+        box.active = false;
+        box.respawnTimer = 8000;
+        if (!k.item && this.mode !== 'timeattack') {
+          k.item = this.randomItem();
+          if (k.isPlayer) {
+            const el = document.getElementById('item-display');
+            el.textContent = this.itemEmoji(k.item);
+            el.style.display = 'block';
+            el.style.animation = 'none';
+            void el.offsetWidth;
+            el.style.animation = 'itemPop 0.3s ease-out';
+          }
+        }
+      }
+    });
+  }
+
+  randomItem() {
+    const items = ['boost','boost','shell','shell','banana','banana','star','bomb'];
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  itemEmoji(item) {
+    const map = { boost:'🚀', shell:'🐢', banana:'🍌', star:'⭐', bomb:'💣' };
+    return map[item] || '🎁';
+  }
+
+  useItem() {
+    if (!this.raceStarted || this.raceFinished) return;
+    const k = this.player;
+    if (!k.item) return;
+    this.applyItem(k, k.item);
+    k.item = null;
+    document.getElementById('item-display').style.display = 'none';
+  }
+
+  applyItem(k, item) {
+    if (item === 'boost') {
+      k.boostTimer = 2500;
+    } else if (item === 'shell') {
+      this.projectiles.push({
+        x: k.x, y: k.y,
+        vx: Math.cos(k.angle) * 8,
+        vy: Math.sin(k.angle) * 8,
+        owner: k,
+        type: 'shell',
+        life: 3000,
+        color: '#40ff80'
+      });
+    } else if (item === 'banana') {
+      this.projectiles.push({
+        x: k.x - Math.cos(k.angle) * 20,
+        y: k.y - Math.sin(k.angle) * 20,
+        vx: 0, vy: 0,
+        owner: k, type: 'banana', life: 15000,
+        color: '#ffee00', static: true
+      });
+    } else if (item === 'star') {
+      k.boostTimer = 5000;
+      k.starTimer = 5000;
+    } else if (item === 'bomb') {
+      this.projectiles.push({
+        x: k.x, y: k.y,
+        vx: Math.cos(k.angle) * 5,
+        vy: Math.sin(k.angle) * 5,
+        owner: k, type: 'bomb', life: 2000,
+        color: '#ff4020'
+      });
+    }
+  }
+
+  checkProjectiles(k) {
+    this.projectiles.forEach(p => {
+      if (p.owner === k || p.dead) return;
+      if (Math.hypot(k.x - p.x, k.y - p.y) < 18) {
+        this.hitKart(k, p);
+        if (!p.static) p.dead = true;
+        else { p.dead = true; } // banana consumed
+      }
+    });
+  }
+
+  hitKart(k, source) {
+    if (k.boostTimer > 0 && k.starTimer > 0) return; // star immunity
+    if (this.mode === 'battle') {
+      k.lives--;
+      if (k.lives <= 0) {
+        k.eliminated = true;
+        this.eliminationHistory.push(k);
+        this.checkBattleEnd();
+      }
+    } else {
+      k.spinTimer = 2000;
+    }
+    if (k.isPlayer) {
+      document.getElementById('hit-overlay').style.opacity = '1';
+      setTimeout(() => document.getElementById('hit-overlay').style.opacity = '0', 200);
+    }
+  }
+
+  checkBattleEnd() {
+    const alive = this.karts.filter(k => !k.eliminated);
+    if (alive.length <= 1) this.endRace();
+  }
+
+  // ===== UPDATE =====
+  update(dt) {
+    if (!this.running) return;
+
+    // Update item boxes respawn
+    this.itemBoxes.forEach(box => {
+      if (!box.active) {
+        box.respawnTimer -= dt;
+        if (box.respawnTimer <= 0) box.active = true;
+      }
+    });
+
+    // Update projectiles
+    this.projectiles = this.projectiles.filter(p => {
+      p.life -= dt;
+      if (!p.static) { p.x += p.vx; p.y += p.vy; }
+      return p.life > 0 && !p.dead;
+    });
+
+    // Bomb explosions
+    this.projectiles.forEach(p => {
+      if (p.type === 'bomb' && p.life < 100) {
+        this.karts.forEach(k => {
+          if (Math.hypot(k.x - p.x, k.y - p.y) < 60) this.hitKart(k, p);
+        });
+      }
+    });
+
+    // Update karts
+    this.karts.forEach(k => this.updateKart(k, dt));
+
+    // Camera follows player
+    const tx = this.player.x - (this.W - 140) / 2;
+    const ty = this.player.y - this.H / 2;
+    this.cameraX += (tx - this.cameraX) * this.cameraSmooth;
+    this.cameraY += (ty - this.cameraY) * this.cameraSmooth;
+
+    // AI item use
+    this.karts.forEach(k => {
+      if (!k.isPlayer && k.item && Math.random() < 0.002) {
+        // target player if close
+        const dp = Math.hypot(k.x - this.player.x, k.y - this.player.y);
+        if (dp < this.W * 0.3 || Math.random() < 0.3) {
+          this.applyItem(k, k.item);
+          k.item = null;
+        }
+      }
+    });
+
+    // Elimination mode check
+    if (this.mode === 'elimination') {
+      const sortedByProgress = [...this.karts]
+        .filter(k => !k.eliminated && !k.finished)
+        .sort((a, b) => (b.lap + b.pathT) - (a.lap + a.pathT));
+      const lapDone = Math.max(...this.karts.map(k => k.lap));
+      if (lapDone > (this._lastElimLap || 0) && sortedByProgress.length > 1) {
+        const last = sortedByProgress[sortedByProgress.length - 1];
+        last.eliminated = true;
+        last.spinTimer = 1000;
+        this.eliminationHistory.push(last);
+        this._lastElimLap = lapDone;
+        if (sortedByProgress.length <= 2) this.endRace();
+      }
+    }
+
+    this.elapsedTime = performance.now() - this.startTime;
+    this.updateHUD();
+    this.updateStandings();
+  }
+
+  updateHUD() {
+    const p = this.player;
+    document.getElementById('hud-lap').textContent =
+      this.mode === 'battle' ? '' : `${Math.min(p.lap + 1, this.totalLaps)}/${this.totalLaps}`;
+    document.getElementById('hud-time').textContent = this.formatTime(this.elapsedTime);
+    document.getElementById('hud-best').textContent =
+      p.bestLap === Infinity ? '--:--.--' : this.formatLapTime(p.bestLap);
+    const pos = this.getPlayerPosition();
+    const posLabels = ['1er','2ème','3ème','4ème','5ème','6ème','7ème','8ème'];
+    document.getElementById('hud-pos').textContent = posLabels[pos - 1] || `${pos}`;
+    document.getElementById('speed-display').innerHTML =
+      `${Math.round(Math.abs(p.speed) * 28)}<span id="speed-unit">km/h</span>`;
+    if (this.mode === 'battle') {
+      document.getElementById('hud-lives-container').style.display = 'flex';
+      document.getElementById('hud-lives').textContent = '❤️'.repeat(Math.max(0, p.lives));
+    }
+    if (p.boostTimer > 0) this.boostTimer = p.boostTimer;
+  }
+
+  getPlayerPosition() {
+    const p = this.player;
+    const sorted = [...this.karts]
+      .filter(k => !k.eliminated)
+      .sort((a, b) => (b.lap + b.pathT) - (a.lap + a.pathT));
+    return sorted.indexOf(p) + 1;
+  }
+
+  updateStandings() {
+    const sorted = [...this.karts]
+      .sort((a, b) => {
+        if (a.finished && b.finished) return a.finishPos - b.finishPos;
+        if (a.finished) return -1;
+        if (b.finished) return 1;
+        return (b.lap + b.pathT) - (a.lap + a.pathT);
+      });
+    const list = document.getElementById('standings-list');
+    list.innerHTML = sorted.map((k, i) => `
+      <div class="stand-item ${k.isPlayer ? 'player' : ''}">
+        <span class="stand-pos">${i+1}</span>
+        <span class="stand-dot" style="background:${k.color}"></span>
+        <span class="stand-name">${k.name}</span>
+        <span class="stand-lap">${this.mode==='battle' ? '❤️'.repeat(k.lives) : `T${k.lap}`}</span>
+      </div>
+    `).join('');
+  }
+
+  formatTime(ms) {
+    const m = Math.floor(ms / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    const d = Math.floor((ms % 1000) / 100);
+    return `${m}:${s.toString().padStart(2,'0')}.${d}`;
+  }
+
+  formatLapTime(ms) {
+    const s = Math.floor(ms / 1000);
+    const d = Math.floor((ms % 1000) / 10);
+    return `${s}.${d.toString().padStart(2,'0')}`;
+  }
+
+  // ===== DRAWING =====
+  draw() {
+    const ctx = this.ctx;
+    const W = this.W, H = this.H;
+    ctx.clearRect(0, 0, W, H);
+    ctx.save();
+    ctx.translate(-this.cameraX, -this.cameraY);
+
+    // Background
+    ctx.fillStyle = this.track.colors.bg;
+    ctx.fillRect(this.cameraX, this.cameraY, W, H);
+
+    // Grass fill
+    ctx.fillStyle = this.track.colors.grass;
+    ctx.fillRect(this.cameraX, this.cameraY, W, H);
+
+    // Draw track
+    this.drawTrack(ctx);
+
+    // Draw item boxes
+    this.drawItemBoxes(ctx);
+
+    // Draw projectiles
+    this.drawProjectiles(ctx);
+
+    // Draw karts
+    this.karts.forEach(k => {
+      if (!k.eliminated || this.mode === 'battle') this.drawKart(ctx, k);
+    });
+
+    ctx.restore();
+
+    // Minimap
+    this.drawMinimap();
+  }
+
+  drawTrack(ctx) {
+    const pts = this.trackPath;
+    const tw = this.trackWidth;
+
+    // Outer road (wide)
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.closePath();
+    ctx.strokeStyle = this.track.colors.outline;
+    ctx.lineWidth = tw * 2.4;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Road
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.closePath();
+    ctx.strokeStyle = this.track.colors.road;
+    ctx.lineWidth = tw * 2;
+    ctx.stroke();
+
+    // Center dashes
+    ctx.setLineDash([20, 20]);
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.closePath();
+    ctx.strokeStyle = this.track.colors.line;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Start/finish line
+    const sp = pts[0];
+    const sp2 = pts[1];
+    const dx = sp2.x - sp.x, dy = sp2.y - sp.y;
+    const len = Math.hypot(dx, dy);
+    const nx = -dy / len * tw, ny = dx / len * tw;
+    ctx.beginPath();
+    ctx.moveTo(sp.x - nx, sp.y - ny);
+    ctx.lineTo(sp.x + nx, sp.y + ny);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 6;
+    ctx.stroke();
+    // Checkered
+    for (let i = 0; i < 6; i++) {
+      const t = i / 5;
+      const px = sp.x - nx + (sp.x + nx - (sp.x - nx)) * t;
+      const py = sp.y - ny + (sp.y + ny - (sp.y - ny)) * t;
+      ctx.beginPath();
+      ctx.arc(px, py, 4, 0, Math.PI * 2);
+      ctx.fillStyle = i % 2 === 0 ? '#000' : '#fff';
+      ctx.fill();
+    }
+  }
+
+  drawItemBoxes(ctx) {
+    const t = performance.now() * 0.002;
+    this.itemBoxes.forEach(box => {
+      if (!box.active) return;
+      const scale = 1 + Math.sin(t * 3 + box.x) * 0.1;
+      ctx.save();
+      ctx.translate(box.x, box.y);
+      ctx.rotate(t);
+      ctx.scale(scale, scale);
+      ctx.fillStyle = 'rgba(255,215,0,0.2)';
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(-12, -12, 24, 24, 4);
+      ctx.fill(); ctx.stroke();
+      ctx.font = '16px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('❓', 0, 0);
+      ctx.restore();
+    });
+  }
+
+  drawProjectiles(ctx) {
+    this.projectiles.forEach(p => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.font = '18px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const emojis = { shell:'🐢', banana:'🍌', bomb:'💣' };
+      ctx.fillText(emojis[p.type] || '●', 0, 0);
+      ctx.restore();
+    });
+  }
+
+  drawKart(ctx, k) {
+    // Trail
+    ctx.save();
+    k.trail.forEach((t, i) => {
+      const alpha = (1 - t.age) * 0.3 * (i / k.trail.length);
+      if (alpha <= 0) return;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = k.color + Math.floor(alpha * 255).toString(16).padStart(2,'0');
+      ctx.fill();
+    });
+    ctx.restore();
+
+    ctx.save();
+    ctx.translate(k.x, k.y);
+    ctx.rotate(k.angle + Math.PI / 2);
+
+    // Spin effect
+    if (k.spinTimer > 0) ctx.rotate(k.spinTimer * 0.01);
+
+    // Star glow
+    if (k.starTimer > 0) {
+      k.starTimer -= 16;
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = '#ffdd00';
+    }
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(3, 3, 12, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Body
+    const s = k.size;
+    ctx.fillStyle = k.color;
+    ctx.beginPath();
+    ctx.moveTo(0, -s);
+    ctx.bezierCurveTo(s * 0.8, -s * 0.5, s * 0.9, s * 0.2, s * 0.6, s);
+    ctx.lineTo(-s * 0.6, s);
+    ctx.bezierCurveTo(-s * 0.9, s * 0.2, -s * 0.8, -s * 0.5, 0, -s);
+    ctx.fill();
+
+    // Cockpit
+    ctx.fillStyle = k.isPlayer ? '#fff' : '#aaa';
+    ctx.beginPath();
+    ctx.ellipse(0, -s * 0.1, s * 0.35, s * 0.45, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Wheels
+    ctx.fillStyle = '#222';
+    [[-s * 0.75, -s * 0.3], [s * 0.75, -s * 0.3], [-s * 0.75, s * 0.4], [s * 0.75, s * 0.4]].forEach(([wx, wy]) => {
+      ctx.beginPath();
+      ctx.ellipse(wx, wy, s * 0.2, s * 0.32, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Boost flames
+    if (k.boostTimer > 0) {
+      ctx.fillStyle = '#ff8020';
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.3, s);
+      ctx.lineTo(0, s + s * (0.5 + Math.random() * 0.8));
+      ctx.lineTo(s * 0.3, s);
+      ctx.fill();
+    }
+
+    ctx.restore();
+
+    // Name tag (only for player on screen)
+    if (k.isPlayer) {
+      ctx.save();
+      ctx.font = 'bold 11px Nunito';
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.fillText('YOU', k.x, k.y - s * 2 - 4);
+      ctx.restore();
+    }
+  }
+
+  drawMinimap() {
+    const mc = this.minimapCtx;
+    const mW = this.minimapCanvas.width;
+    const mH = this.minimapCanvas.height;
+    mc.clearRect(0, 0, mW, mH);
+
+    // Scale
+    const scaleX = mW / this.W;
+    const scaleY = mH / this.H;
+    const scale = Math.min(scaleX, scaleY) * 0.9;
+    const offX = (mW - this.W * scale) / 2;
+    const offY = (mH - this.H * scale) / 2;
+
+    const tx = (x) => x * scale + offX;
+    const ty = (y) => y * scale + offY;
+
+    // Track
+    mc.beginPath();
+    this.trackPath.forEach((p, i) => {
+      i === 0 ? mc.moveTo(tx(p.x), ty(p.y)) : mc.lineTo(tx(p.x), ty(p.y));
+    });
+    mc.closePath();
+    mc.strokeStyle = this.track.colors.road;
+    mc.lineWidth = this.trackWidth * scale * 1.8;
+    mc.lineJoin = 'round';
+    mc.stroke();
+
+    // Karts
+    this.karts.forEach(k => {
+      if (k.eliminated && this.mode !== 'battle') return;
+      mc.beginPath();
+      mc.arc(tx(k.x), ty(k.y), k.isPlayer ? 4 : 2.5, 0, Math.PI * 2);
+      mc.fillStyle = k.color;
+      mc.fill();
+      if (k.isPlayer) {
+        mc.strokeStyle = '#fff';
+        mc.lineWidth = 1.5;
+        mc.stroke();
+      }
+    });
+  }
+
+  // ===== LOOP =====
+  loop(now) {
+    if (!this.running) return;
+    const dt = Math.min(now - (this._lastTime || now), 50);
+    this._lastTime = now;
+    this.update(dt);
+    this.draw();
+    animFrame = requestAnimationFrame((t) => this.loop(t));
+  }
+
+  start() {
+    this.running = true;
+    this.startTime = performance.now();
+    this.karts.forEach(k => k.lapStart = this.startTime);
+    this._lastTime = this.startTime;
+    animFrame = requestAnimationFrame((t) => this.loop(t));
+  }
+}
+
+// ========== UI FLOW ==========
+let currentGame = null;
+let lastConfig = {};
+
+function startGame() {
+  lastConfig = { mode: selectedMode, map: selectedMap, laps: totalLaps };
+  document.getElementById('menu').style.display = 'none';
+  const gc = document.getElementById('game-container');
+  gc.style.display = 'flex';
+
+  const canvas = document.getElementById('gameCanvas');
+  const minimap = document.getElementById('minimap-canvas');
+  resizeCanvas(canvas);
+
+  if (currentGame) { currentGame.destroy(); currentGame = null; }
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+
+  currentGame = new Game(canvas, minimap, selectedMode, selectedMap, totalLaps);
+
+  // Mode indicator
+  const modeNames = { race:'🏁 COURSE', timeattack:'⏱ TIME ATTACK', elimination:'💀 ÉLIMINATION', battle:'💣 BATTLE' };
+  document.getElementById('mode-indicator').textContent = modeNames[selectedMode] || '';
+  document.getElementById('hud-mode-name').textContent = modeNames[selectedMode] || '';
+
+  // Laps label
+  document.getElementById('hud-lap').textContent = `1/${totalLaps}`;
+  if (selectedMode === 'timeattack') {
+    document.getElementById('hud-pos-container').style.display = 'none';
+    document.getElementById('standings').style.display = 'none';
+  } else {
+    document.getElementById('hud-pos-container').style.display = 'flex';
+    document.getElementById('standings').style.display = 'block';
+  }
+  if (selectedMode === 'battle') {
+    document.getElementById('hud-lives-container').style.display = 'flex';
+    document.getElementById('hud-lap').textContent = '';
+  }
+
+  runCountdown();
+}
+
+function resizeCanvas(canvas) {
+  const gc = document.getElementById('game-container');
+  const W = gc.clientWidth - 140;
+  const H = gc.clientHeight - 60;
+  canvas.width = W;
+  canvas.height = H;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+}
+
+function runCountdown() {
+  const el = document.getElementById('countdown');
+  el.style.display = 'flex';
+  let count = 3;
+
+  function show(text, color) {
+    el.innerHTML = `<div class="countdown-num" style="color:${color}">${text}</div>`;
+  }
+
+  show('3', '#ff4040');
+  let timer = setTimeout(() => {
+    show('2', '#ff9020');
+    timer = setTimeout(() => {
+      show('1', '#ffdd20');
+      timer = setTimeout(() => {
+        show('GO!', '#40ff80');
+        currentGame.raceStarted = true;
+        currentGame.startTime = performance.now();
+        currentGame.karts.forEach(k => k.lapStart = currentGame.startTime);
+        currentGame.start();
+        timer = setTimeout(() => {
+          el.style.display = 'none';
+        }, 800);
+      }, 1000);
+    }, 1000);
+  }, 1000);
+}
+
+function showFinishScreen(game) {
+  const fs = document.getElementById('finish-screen');
+  fs.style.display = 'flex';
+
+  const mode = game.mode;
+  const title = document.getElementById('finish-title');
+  if (mode === 'timeattack') title.textContent = '⏱ TEMPS FINAL';
+  else if (mode === 'battle') title.textContent = '💣 BATAILLE TERMINÉE !';
+  else if (mode === 'elimination') title.textContent = '💀 SURVIVANT !';
+  else title.textContent = '🏁 ARRIVÉE !';
+
+  const sorted = game.finishOrder.length > 0
+    ? game.finishOrder
+    : [...game.karts].sort((a, b) => (b.lap + b.pathT) - (a.lap + a.pathT));
+
+  // Podium
+  const podium = document.getElementById('podium');
+  const top3 = sorted.slice(0, 3);
+  const order = [1, 0, 2]; // center first
+  const classes = ['podium-2', 'podium-1', 'podium-3'];
+  podium.innerHTML = order.map(idx => {
+    const k = top3[idx];
+    if (!k) return '';
+    return `
+      <div class="podium-step ${classes[order.indexOf(idx)]}">
+        <div class="podium-rank">${['🥇','🥈','🥉'][idx]}</div>
+        <div class="podium-kart" style="color:${k.color}">🏎️</div>
+        <div class="podium-name">${k.name}</div>
+        <div class="podium-time">${game.formatTime(k.totalTime || 0)}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Table
+  const tbody = document.getElementById('results-body');
+  tbody.innerHTML = sorted.map((k, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td style="color:${k.color}; font-weight:700">${k.name} ${k.isPlayer ? '(Vous)' : ''}</td>
+      <td>${k.bestLap === Infinity ? '--' : game.formatLapTime(k.bestLap) + 's'}</td>
+      <td>${game.formatTime(k.totalTime || 0)}</td>
+    </tr>
+  `).join('');
+}
+
+function returnToMenu() {
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+  if (currentGame) { currentGame.destroy(); currentGame.running = false; currentGame = null; }
+  document.getElementById('finish-screen').style.display = 'none';
+  document.getElementById('game-container').style.display = 'none';
+  document.getElementById('countdown').style.display = 'none';
+  document.getElementById('item-display').style.display = 'none';
+  document.getElementById('boost-overlay').style.opacity = '0';
+  document.getElementById('menu').style.display = 'flex';
+}
+
+function restartGame() {
+  document.getElementById('finish-screen').style.display = 'none';
+  startGame();
+}
+
+// Resize handling
+window.addEventListener('resize', () => {
+  if (currentGame && document.getElementById('game-container').style.display !== 'none') {
+    const canvas = document.getElementById('gameCanvas');
+    resizeCanvas(canvas);
+    currentGame.resize(canvas.width, canvas.height);
+  }
+});
+</script>
+</body>
+</html>
